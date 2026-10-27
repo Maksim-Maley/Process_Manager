@@ -4,7 +4,7 @@
 #include <tchar.h>
 #include <string>
 #include <iomanip>
-#include <sstream>
+#include <sstream> 
 
 int main()
 {
@@ -15,7 +15,7 @@ int main()
 	PROCESSENTRY32 process;
 	DWORD dwPriorityClass;
 
-	std::cout << ">";
+	std::cout << "> ";
 
 	std::string input;
 	std::getline(std::cin, input);
@@ -49,8 +49,16 @@ int main()
 		do
 		{								
 			std::cout << std::setw(5)
-				<< process.th32ProcessID << "    "; //PID
-			_tprintf(process.szExeFile); //Name process
+				<< process.th32ProcessID << " | "; //PID
+			std::wcout << std::setw(40)
+				<< process.szExeFile << " | "; //Name process
+			std::cout << std::setw(3)
+				<< process.cntThreads << " | " //Количество потоков выполнения, запущенных процессом.
+			    << std::setw(6)
+				<< process.th32ParentProcessID << " | " //Идентификатор процесса, создавшего этот процесс
+			    << std::setw(3)
+				<< process.pcPriClassBase << " | "; //Базовый приоритет всех потоков, созданных в ходе этого процесса.
+			
 			std::cout << "\n";
 
 			//if (dwPriorityClass)
@@ -73,13 +81,3 @@ int main()
 	else
 		return 0;
 }
-
-
-/*
-std::cout << std::setw(3)
-				<< process.cntThreads << "    "; //Количество потоков выполнения, запущенных процессом.
-			std::cout << std::setw(6)
-				<< process.th32ParentProcessID<< "    "; //Идентификатор процесса, создавшего этот процесс
-			std::cout << std::setw(3)
-				<< process.pcPriClassBase<< "    "; //Базовый приоритет всех потоков, созданных в ходе этого процесса.
-*/
