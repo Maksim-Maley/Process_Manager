@@ -64,7 +64,7 @@ void FindProcesses(const std::wstring& searchName)
 {
 	if (searchName.empty())
 	{
-		std::wcout << "Укажите процесс\n";
+		std::wcout << L"Укажите процесс\n";
 		return;
 	}
 

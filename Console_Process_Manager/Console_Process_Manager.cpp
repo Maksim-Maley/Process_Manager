@@ -57,7 +57,7 @@ int main()
 		{
 			if (argument.empty())
 			{
-				std::wcout << "Укажите процесс" << std::endl;
+				std::wcout << L"Укажите процесс" << std::endl;
 			}
 			else
 			{
@@ -73,7 +73,7 @@ int main()
 			std::wcout << "exit - close the program\n";
 		}
 		else
-			std::wcout << "Неизвестная команда. Введите help для списка команд. \n" ;
+			std::wcout << L"Неизвестная команда. Введите help для списка команд. \n" ;
 	}
 
 }
