@@ -1,5 +1,4 @@
 ﻿#include "ProcessManager.hpp"
-#include <string>
 #include <sstream> 
 
 std::wstring Utf8ToWide(const std::string& text)
@@ -58,7 +57,7 @@ int main()
 		{
 			if (argument.empty())
 			{
-				std::cout << "Укажите процесс" << std::endl;
+				std::wcout << "Укажите процесс" << std::endl;
 			}
 			else
 			{

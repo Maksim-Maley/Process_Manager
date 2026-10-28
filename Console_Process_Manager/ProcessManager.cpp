@@ -125,10 +125,10 @@ void FindProcesses(const std::wstring& searchName)
 			<< errorCode << '\n';
 	}
 
-	CloseHandle(hProcessSnap);
-
-	if (!found)
+	else if (!found)
 	{
 		std::wcout << L"Процесс не найден\n";
 	}
+
+	CloseHandle(hProcessSnap);
 }
