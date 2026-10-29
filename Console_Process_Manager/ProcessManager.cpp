@@ -60,14 +60,32 @@ void ListProcesses()
 	CloseHandle(hProcessSnap);
 }
 
-void FindProcesses(const std::wstring& searchName)
+bool ContainsIgnoreCase(const std::wstring& processName, const std::wstring& searchName)
 {
-	if (searchName.empty())
+	int lengthProcess = static_cast<int>(processName.length());
+	int lengthSearch = static_cast<int>(searchName.length());
+	
+	for (int i = 0; i <= lengthProcess - lengthSearch; ++i)
 	{
-		std::wcout << L"Укажите процесс\n";
-		return;
+		
+		int result = CompareStringOrdinal(
+			processName.c_str() + i,  // начало фрагмента
+			lengthSearch,                // длина фрагмента
+			searchName.c_str(),       // поисковая строка
+			lengthSearch,                // её длина
+			TRUE                      
+		);
+
+		
+		if (result == CSTR_EQUAL)
+			return true;
 	}
 
+	return false;
+}
+
+void FindProcesses(const std::wstring& searchName)
+{
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hProcessSnap == INVALID_HANDLE_VALUE)
 	{
@@ -97,16 +115,11 @@ void FindProcesses(const std::wstring& searchName)
 
 	do
 	{
-		if (CompareStringOrdinal(
-			process.szExeFile,
-			-1,
-			searchName.c_str(),
-			-1,
-			TRUE) == CSTR_EQUAL)
+		if (ContainsIgnoreCase(process.szExeFile, searchName.c_str()))
 		{
 			std::wcout
 				<< L"PID: " << process.th32ProcessID
-				<< L"\tИмя: " << process.szExeFile
+				<< L"\tName: " << process.szExeFile
 				<< L'\n';
 
 			found = true;
@@ -127,7 +140,7 @@ void FindProcesses(const std::wstring& searchName)
 
 	else if (!found)
 	{
-		std::wcout << L"Процесс не найден\n";
+		std::wcout << L"Process not found\n";
 	}
 
 	CloseHandle(hProcessSnap);
