@@ -125,6 +125,28 @@ bool FindProcessByPid(DWORD targetPid) {
 
 void FindProcesses(const std::wstring& searchName)
 {
+	bool isNumeric = IsNumericQuery(searchName);
+	DWORD targetPid = 0;
+
+	if (isNumeric) {
+		try {
+			unsigned long parsedValue = std::stoul(searchName);
+			if (parsedValue > static_cast<unsigned long>((std::numeric_limits<DWORD>::max)())) {
+				std::wcout << L"Ошибка: введённый PID превышает допустимый диапазон (DWORD).\n";
+				return;
+			}
+			targetPid = static_cast<DWORD>(parsedValue);
+		}
+		catch (const std::invalid_argument&) {
+			std::wcout << L"Ошибка: неверный формат PID.\n";
+			return;
+		}
+		catch (const std::out_of_range&) {
+			std::wcout << L"Ошибка: число слишком велико.\n";
+			return;
+		}
+	}
+
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hProcessSnap == INVALID_HANDLE_VALUE)
 	{
@@ -154,13 +176,26 @@ void FindProcesses(const std::wstring& searchName)
 
 	do
 	{
-		if (ContainsSearchName(process.szExeFile, searchName.c_str()))
-		{
-			std::wcout
-				<< process.th32ProcessID
-				<< L'\t' << process.szExeFile
-				<< L'\n';
+		bool match = false;
 
+		// Ветвление логики в зависимости от типа запроса
+		if (isNumeric) {
+			// Сравниваем числовой PID
+			if (process.th32ProcessID == targetPid) {
+				match = true;
+			}
+		}
+		else {
+			// Ищем подстроку в имени (ваша существующая функция)
+			if (ContainsSearchName(process.szExeFile, searchName)) {
+				match = true;
+			}
+		}
+
+		// Если нашли совпадение — выводим и ставим флаг
+		if (match) {
+			std::wcout << process.th32ProcessID
+				<< '\t' << process.szExeFile << L"\n";
 			found = true;
 		}
 		
