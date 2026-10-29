@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #define NOMINMAX
 #include <windows.h>
@@ -7,9 +7,9 @@
 #include <iomanip>
 #include <string>
 #include <algorithm>
-#include <limits>
-#include <stdexcept>
 
-
+// Выводит список процессов и основные сведения о каждом из них.
 void ListProcesses();
+
+// Ищет процессы по части имени без учёта регистра или по числовому PID.
 void FindProcesses(const std::wstring& searchName);
