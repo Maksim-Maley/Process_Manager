@@ -1,4 +1,4 @@
-﻿#include "ProcessManager.hpp"
+#include "ProcessManager.hpp"
 #include <sstream>
 
 // Преобразует строку UTF-8, полученную от пользователя, в std::wstring,
