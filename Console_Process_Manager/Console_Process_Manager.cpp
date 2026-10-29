@@ -61,6 +61,7 @@ int main()
 			}
 			else
 			{
+				std::wcout << "PID   | NAME " << std::endl;
 				FindProcesses(Utf8ToWide(argument));
 			}
 		}

@@ -2,7 +2,17 @@
 
 void ListProcesses()
 {
-	std::wcout << "PID | NAME | THREADS | PARENT PID | BASE PRIORITY" << std::endl;
+	std::wcout << std::left;
+	std::wcout << std::setw(5)
+		<< "PID" << L" | "
+		<< std::setw(40)
+		<< "NAME" << L" | "
+		<< std::setw(3)
+		<< "THREADS" << L" | "
+		<< std::setw(6)
+		<< "PARENT PID" << L" | "
+		<< std::setw(3)
+		<< "BASE PRIORITY" << L" |\n";
 	std::wcout << "--------------------------------------------------" << std::endl;
 
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -32,6 +42,7 @@ void ListProcesses()
 
 	do
 	{
+		std::wcout << std::left;
 		std::wcout << std::setw(5)
 			<< process.th32ProcessID << L" | "
 			<< std::setw(40)
@@ -60,7 +71,7 @@ void ListProcesses()
 	CloseHandle(hProcessSnap);
 }
 
-bool ContainsIgnoreCase(const std::wstring& processName, const std::wstring& searchName)
+bool ContainsSearchName(const std::wstring& processName, const std::wstring& searchName)
 {
 	int lengthProcess = static_cast<int>(processName.length());
 	int lengthSearch = static_cast<int>(searchName.length());
@@ -115,11 +126,11 @@ void FindProcesses(const std::wstring& searchName)
 
 	do
 	{
-		if (ContainsIgnoreCase(process.szExeFile, searchName.c_str()))
+		if (ContainsSearchName(process.szExeFile, searchName.c_str()))
 		{
 			std::wcout
-				<< L"PID: " << process.th32ProcessID
-				<< L"\tName: " << process.szExeFile
+				<< process.th32ProcessID
+				<< L'\t' << process.szExeFile
 				<< L'\n';
 
 			found = true;
