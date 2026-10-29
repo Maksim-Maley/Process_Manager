@@ -95,6 +95,34 @@ bool ContainsSearchName(const std::wstring& processName, const std::wstring& sea
 	return false;
 }
 
+bool IsNumericQuery(const std::wstring& searchName)
+{
+	if (searchName.empty())
+		return false;
+	return std::all_of(searchName.begin(), searchName.end(),
+		[](wchar_t ch) { return ch >= L'0' && ch <= L'9'; });
+}
+
+bool FindProcessByPid(DWORD targetPid) {
+	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE) return false;
+
+	PROCESSENTRY32W process;
+	process.dwSize = sizeof(process);
+
+	bool found = false;
+	if (Process32FirstW(hProcessSnap, &process)) {
+		do {
+			if (process.th32ProcessID == targetPid) {
+				found = true;
+				break;
+			}
+		} while (Process32NextW(hProcessSnap, &process));
+	}
+	CloseHandle(hProcessSnap);
+	return found;
+}
+
 void FindProcesses(const std::wstring& searchName)
 {
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -135,7 +163,7 @@ void FindProcesses(const std::wstring& searchName)
 
 			found = true;
 		}
-
+		
 		SetLastError(ERROR_SUCCESS);
 		result = Process32NextW(hProcessSnap, &process);
 
