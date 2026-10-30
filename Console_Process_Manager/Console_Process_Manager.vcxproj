@@ -145,9 +145,11 @@
   <ItemGroup>
     <ClCompile Include="Console_Process_Manager.cpp" />
     <ClCompile Include="ProcessManager.cpp" />
+    <ClCompile Include="UTF8.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProcessManager.hpp" />
+    <ClInclude Include="UTF8.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

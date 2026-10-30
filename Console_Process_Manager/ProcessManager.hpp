@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <string>
 #include <algorithm>
+#include "UTF8.hpp"
 
 // Выводит список процессов и основные сведения о каждом из них.
 void ListProcesses();

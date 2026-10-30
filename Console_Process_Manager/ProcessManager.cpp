@@ -5,18 +5,18 @@
 // Выводит таблицу всех процессов, видимых через Windows Tool Help API.
 void ListProcesses()
 {
-	std::wcout << std::left;
-	std::wcout << std::setw(5)
-		<< L"PID" << L" | "
+	std::cout << std::left;
+	std::cout << std::setw(5)
+		<< "PID" << " | "
 		<< std::setw(40)
-		<< L"NAME" << L" | "
+		<< "NAME" << " | "
 		<< std::setw(8)
-		<< L"THREADS" << L" | "
+		<< "THREADS" << " | "
 		<< std::setw(12)
-		<< L"PARENT PID" << L" | "
+		<< "PARENT PID" << " | "
 		<< std::setw(14)
-		<< L"BASE PRIORITY" << L"|\n";
-	std::wcout << L"--------------------------------------------------------------------------------------" << std::endl;
+		<< "BASE PRIORITY" << "|\n";
+	std::cout << "--------------------------------------------------------------------------------------" << std::endl;
 
 	// Создаём снимок списка процессов. Без него перечислить процессы нельзя.
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -45,12 +45,12 @@ void ListProcesses()
 	// Обрабатываем текущую запись, затем переходим к следующей.
 	do
 	{
-		std::wcout << std::left
-			<< std::setw(5) << process.th32ProcessID << L" | "
-			<< std::setw(40) << process.szExeFile << L" | "
-			<< std::setw(8) << process.cntThreads << L" | "
-			<< std::setw(12) << process.th32ParentProcessID << L" | "
-			<< std::setw(14) << process.pcPriClassBase << L"|\n";
+		std::cout << std::left
+			<< std::setw(5) << process.th32ProcessID << " | "
+			<< std::setw(40) << WideToUtf8(process.szExeFile) << " | "
+			<< std::setw(8) << process.cntThreads << " | "
+			<< std::setw(12) << process.th32ParentProcessID << " | "
+			<< std::setw(14) << process.pcPriClassBase << "|\n";
 
 		// Сбрасываем код ошибки перед вызовом, чтобы отличить конец списка от ошибки.
 		SetLastError(ERROR_SUCCESS);
@@ -109,7 +109,7 @@ void FindProcesses(const std::wstring& searchName)
 	// Защита на уровне самой функции: пустой запрос не должен совпасть со всеми именами.
 	if (searchName.empty())
 	{
-		std::wcout << L"Укажите имя процесса или PID." << std::endl;
+		std::cout << "Укажите имя процесса или PID." << std::endl;
 		return;
 	}
 
@@ -126,7 +126,7 @@ void FindProcesses(const std::wstring& searchName)
 			// Не допускаем преобразования числа за пределами типа DWORD.
 			if (parsedValue > static_cast<unsigned long>((std::numeric_limits<DWORD>::max)()))
 			{
-				std::wcout << L"Ошибка: введённый PID превышает допустимый диапазон (DWORD).\n";
+				std::cout << "Ошибка: введённый PID превышает допустимый диапазон (DWORD).\n";
 				return;
 			}
 
@@ -134,12 +134,12 @@ void FindProcesses(const std::wstring& searchName)
 		}
 		catch (const std::invalid_argument&)
 		{
-			std::wcout << L"Ошибка: неверный формат PID.\n";
+			std::cout << "Ошибка: неверный формат PID.\n";
 			return;
 		}
 		catch (const std::out_of_range&)
 		{
-			std::wcout << L"Ошибка: число слишком велико.\n";
+			std::cout << "Ошибка: число слишком велико.\n";
 			return;
 		}
 	}
@@ -190,8 +190,8 @@ void FindProcesses(const std::wstring& searchName)
 		// Если найдено совпадение — выводим PID и имя и запоминаем результат.
 		if (match)
 		{
-			std::wcout << process.th32ProcessID
-				<< L"\t" << process.szExeFile << L"\n";
+			std::cout << process.th32ProcessID
+				<< "\t" << WideToUtf8(process.szExeFile) << "\n";
 			found = true;
 		}
 
@@ -208,7 +208,7 @@ void FindProcesses(const std::wstring& searchName)
 	}
 	else if (!found)
 	{
-		std::wcout << L"Процесс не найден.\n";
+		std::cout << "Процесс не найден.\n";
 	}
 
 	// Закрываем снимок и при успешном поиске, и если совпадений нет.
